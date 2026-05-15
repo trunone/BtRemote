@@ -223,4 +223,7 @@
     <string name="default_option">Padrão</string>
     <string name="page_up">Page Up</string>
     <string name="page_down">Page Down</string>
+    <string name="mouse_scroll_speed">Velocidade de rolagem</string>
+    <string name="show_remote_buttons_in_notification">Mostrar botões do controle na notificação</string>
+    <string name="keyboard_arabic">Árabe</string>
 </resources>
