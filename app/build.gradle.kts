@@ -6,13 +6,13 @@ plugins {
 android {
     namespace = "com.atharok.btremote"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
         applicationId = "com.atharok.btremote"
         minSdk = 28
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 26
         versionName = "1.12.1"
 
@@ -61,8 +61,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     buildFeatures {
