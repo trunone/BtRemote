@@ -1,7 +1,7 @@
 package com.atharok.btremote.domain.repositories
 
 import com.atharok.btremote.domain.entities.RemoteNavigationEntity
-import com.atharok.btremote.domain.entities.remoteInput.PhysicalVolumeButtonAction
+import com.atharok.btremote.domain.entities.remoteInput.VolumePhysicalButtonAction
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.KeyboardLanguage
 import com.atharok.btremote.domain.entities.settings.AppearanceSettings
 import com.atharok.btremote.domain.entities.settings.RemoteSettings
@@ -50,9 +50,9 @@ interface DataStoreRepository {
 
     suspend fun saveUseMouseNavigationByDefault(useMouseNavigationByDefault: Boolean)
 
-    suspend fun savePhysicalVolumeUpButtonAction(physicalVolumeButtonAction: PhysicalVolumeButtonAction)
+    suspend fun saveVolumePhysicalButtonActionUp(volumePhysicalButtonAction: VolumePhysicalButtonAction)
 
-    suspend fun savePhysicalVolumeDownButtonAction(physicalVolumeButtonAction: PhysicalVolumeButtonAction)
+    suspend fun saveVolumePhysicalButtonActionDown(volumePhysicalButtonAction: VolumePhysicalButtonAction)
 
     // ---- Others ----
 

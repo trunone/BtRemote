@@ -13,7 +13,7 @@ import com.atharok.btremote.common.utils.DEFAULT_USE_GYROSCOPE
 import com.atharok.btremote.common.utils.DEFAULT_USE_MINIMALIST_REMOTE
 import com.atharok.btremote.common.utils.USE_MOUSE_NAVIGATION_BY_DEFAULT
 import com.atharok.btremote.domain.entities.RemoteNavigationEntity
-import com.atharok.btremote.domain.entities.remoteInput.PhysicalVolumeButtonAction
+import com.atharok.btremote.domain.entities.remoteInput.VolumePhysicalButtonAction
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.KeyboardLanguage
 
 data class RemoteSettings(
@@ -34,6 +34,6 @@ data class RemoteSettings(
     val useMinimalistRemote: Boolean = DEFAULT_USE_MINIMALIST_REMOTE,
     val useEnterForSelection: Boolean = DEFAULT_USE_ENTER_FOR_SELECTION,
     val useMouseNavigationByDefault: Boolean = USE_MOUSE_NAVIGATION_BY_DEFAULT,
-    val physicalVolumeUpButtonAction: PhysicalVolumeButtonAction = PhysicalVolumeButtonAction.DEFAULT,
-    val physicalVolumeDownButtonAction: PhysicalVolumeButtonAction = PhysicalVolumeButtonAction.DEFAULT
+    val volumePhysicalButtonActionUp: VolumePhysicalButtonAction = VolumePhysicalButtonAction.DEFAULT,
+    val volumePhysicalButtonActionDown: VolumePhysicalButtonAction = VolumePhysicalButtonAction.DEFAULT
 )

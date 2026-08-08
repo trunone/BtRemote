@@ -7,7 +7,7 @@ import com.atharok.btremote.common.utils.MOUSE_REPORT_ID
 import com.atharok.btremote.common.utils.REMOTE_INPUT_NONE
 import com.atharok.btremote.common.utils.REMOTE_REPORT_ID
 
-enum class PhysicalVolumeButtonAction(
+enum class VolumePhysicalButtonAction(
     @param:StringRes val stringRes: Int,
     val hidReportId: Int,
     val pressedBytes: ByteArray,

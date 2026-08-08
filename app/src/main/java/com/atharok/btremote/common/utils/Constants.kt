@@ -78,14 +78,14 @@ val bluetoothHidDescriptor = byteArrayOf(
     0x75.toByte(), 0x01.toByte(),                    //   Report Size (1)
     0x95.toByte(), 0x08.toByte(),                    //   Report Count (8)
     0x81.toByte(), 0x02.toByte(),                    //   Input (Data,Variable,Absolute)
-    0x75.toByte(), 0x08.toByte(),                    //    Report Size (8)
-    0x95.toByte(), 0x01.toByte(),                    //    Report Count (1)
-    0x15.toByte(), 0x00.toByte(),                    //    Logical Minimum (0)
-    0x26.toByte(), 0xFF.toByte(), 0x00.toByte(),     //    Logical Maximum (255)
-    0x05.toByte(), 0x07.toByte(),                    //    Usage Page (Keyboard Key Codes)
-    0x19.toByte(), 0x00.toByte(),                    //    Usage Minimum (0)
-    0x29.toByte(), 0xFF.toByte(),                    //    Usage Maximum (255)
-    0x81.toByte(), 0x00.toByte(),                    //    Input (Data,Array,Absolute)
+    0x75.toByte(), 0x08.toByte(),                    //   Report Size (8)
+    0x95.toByte(), 0x01.toByte(),                    //   Report Count (1)
+    0x15.toByte(), 0x00.toByte(),                    //   Logical Minimum (0)
+    0x26.toByte(), 0xFF.toByte(), 0x00.toByte(),     //   Logical Maximum (255)
+    0x05.toByte(), 0x07.toByte(),                    //   Usage Page (Keyboard Key Codes)
+    0x19.toByte(), 0x00.toByte(),                    //   Usage Minimum (0)
+    0x29.toByte(), 0xFF.toByte(),                    //   Usage Maximum (255)
+    0x81.toByte(), 0x00.toByte(),                    //   Input (Data,Array,Absolute)
     0xC0.toByte(),                                   // End Collection
 
     // Mouse

@@ -3,7 +3,10 @@ package com.atharok.btremote.ui.screens
 import android.bluetooth.BluetoothHidDevice
 import android.content.Context
 import android.content.res.Configuration
+import android.view.InputDevice
+import android.view.KeyEvent
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +29,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -38,11 +44,15 @@ import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.atharok.btremote.R
 import com.atharok.btremote.common.utils.AppIcons
+import com.atharok.btremote.common.utils.KEYBOARD_REPORT_ID
+import com.atharok.btremote.common.utils.REMOTE_INPUT_NONE
+import com.atharok.btremote.common.utils.REMOTE_REPORT_ID
 import com.atharok.btremote.common.utils.getKeyboardLayout
 import com.atharok.btremote.domain.entities.DeviceHidConnectionState
 import com.atharok.btremote.domain.entities.RemoteNavigationEntity
 import com.atharok.btremote.domain.entities.remoteInput.MouseAction
-import com.atharok.btremote.domain.entities.remoteInput.PhysicalVolumeButtonAction
+import com.atharok.btremote.domain.entities.remoteInput.RemoteButtonProperties
+import com.atharok.btremote.domain.entities.remoteInput.VolumePhysicalButtonAction
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.KeyboardLanguage
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.virtualKeyboard.VirtualKeyboardLayout
 import com.atharok.btremote.domain.entities.settings.RemoteSettings
@@ -54,7 +64,6 @@ import com.atharok.btremote.ui.components.BasicIconButton
 import com.atharok.btremote.ui.components.FadeAnimatedContent
 import com.atharok.btremote.ui.components.LoadingDialog
 import com.atharok.btremote.ui.components.MoreOverflowMenu
-import com.atharok.btremote.ui.components.PhysicalVolumeButtonsHandler
 import com.atharok.btremote.ui.theme.surfaceElevationMedium
 import com.atharok.btremote.ui.views.RemoteScreenHelpModalBottomSheet
 import com.atharok.btremote.ui.views.keyboard.AdvancedKeyboard
@@ -85,6 +94,8 @@ fun RemoteScreen(
 ) {
     val configuration = LocalConfiguration.current
 
+    val focusRequester = remember { FocusRequester() }
+
     val remoteSettings by remoteViewModel
         .remoteSettingsFlow.collectAsStateWithLifecycle(RemoteSettings())
 
@@ -102,11 +113,7 @@ fun RemoteScreen(
 
     BackHandler(enabled = true, onBack = closeApp)
 
-    PhysicalVolumeButtonsHandler(
-        upAction = remoteSettings.physicalVolumeUpButtonAction,
-        downAction = remoteSettings.physicalVolumeDownButtonAction,
-        remoteViewModel = remoteViewModel
-    )
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
 
     StatelessRemoteScreen(
         deviceName = bluetoothDeviceHidConnectionState.deviceName,
@@ -187,6 +194,44 @@ fun RemoteScreen(
             }
         },
         modifier = modifier
+            .focusRequester(focusRequester)
+            .focusable()
+            .onPreviewKeyEvent { event ->
+
+                // ---- Physical Buttons Handler ----
+
+                val nativeEvent = event.nativeKeyEvent
+
+                // Volume Physical Buttons
+
+                val isHidReportSent = handlePhysicalVolumeButton(
+                    event = nativeEvent,
+                    volumePhysicalButtonActionUp = remoteSettings.volumePhysicalButtonActionUp,
+                    volumePhysicalButtonActionDown = remoteSettings.volumePhysicalButtonActionDown,
+                    sendHidReport = { id: Int, bytes: ByteArray ->
+                        remoteViewModel.sendReport(id, bytes)
+                    }
+                )
+
+                if(isHidReportSent) return@onPreviewKeyEvent true
+
+                // Gamepad Physical Buttons
+
+                val isFromGamepad = nativeEvent.device?.sources?.let { sources ->
+                    sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
+                            sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK
+                } ?: false
+
+                if (!isFromGamepad) return@onPreviewKeyEvent false
+
+                handlePhysicalGamepadButtonAction(
+                    event = nativeEvent,
+                    remoteSettings = remoteSettings,
+                    sendHidReport = { id: Int, bytes: ByteArray ->
+                        remoteViewModel.sendReport(id, bytes)
+                    }
+                )
+            }
     )
 }
 
@@ -585,43 +630,94 @@ private fun TopBarActions(
     }
 }
 
-@Composable
-private fun PhysicalVolumeButtonsHandler(
-    upAction: PhysicalVolumeButtonAction,
-    downAction: PhysicalVolumeButtonAction,
-    remoteViewModel: RemoteViewModel
-) {
-    if(upAction != PhysicalVolumeButtonAction.DEFAULT || downAction != PhysicalVolumeButtonAction.DEFAULT) {
-        PhysicalVolumeButtonsHandler(
-            onVolumeUpPressed = {
-                upAction.doPhysicalVolumeAction {
-                    remoteViewModel.sendReport(it.hidReportId, it.pressedBytes)
-                }
-            },
-            onVolumeUpReleased = {
-                upAction.doPhysicalVolumeAction {
-                    remoteViewModel.sendReport(it.hidReportId, it.releasedBytes)
-                }
-            },
-            onVolumeDownPressed = {
-                downAction.doPhysicalVolumeAction {
-                    remoteViewModel.sendReport(it.hidReportId, it.pressedBytes)
-                }
-            },
-            onVolumeDownReleased = {
-                downAction.doPhysicalVolumeAction {
-                    remoteViewModel.sendReport(it.hidReportId, it.releasedBytes)
-                }
+// ---- Physical Buttons ----
+
+private fun handlePhysicalGamepadButtonAction(
+    event: KeyEvent,
+    remoteSettings: RemoteSettings,
+    sendHidReport: (Int, ByteArray) -> Unit
+): Boolean {
+    var id = REMOTE_REPORT_ID
+    val input: ByteArray = when (event.keyCode) {
+        KeyEvent.KEYCODE_DPAD_UP -> RemoteButtonProperties.MenuUpButton.input
+        KeyEvent.KEYCODE_DPAD_DOWN -> RemoteButtonProperties.MenuDownButton.input
+        KeyEvent.KEYCODE_DPAD_LEFT -> RemoteButtonProperties.MenuLeftButton.input
+        KeyEvent.KEYCODE_DPAD_RIGHT -> RemoteButtonProperties.MenuRightButton.input
+        KeyEvent.KEYCODE_BUTTON_A -> {
+            if(remoteSettings.useEnterForSelection) {
+                id = KEYBOARD_REPORT_ID
+                RemoteButtonProperties.KeyboardEnterButton.input
+            } else {
+                RemoteButtonProperties.MenuPickButton.input
             }
-        )
+        }
+        KeyEvent.KEYCODE_BUTTON_B -> RemoteButtonProperties.BackButton.input
+        else -> return false
     }
+
+    return doPhysicalGamepadButtonAction(
+        event = event,
+        id = id,
+        input = input,
+        sendHidReport = sendHidReport
+    )
 }
 
-private fun PhysicalVolumeButtonAction.doPhysicalVolumeAction(
-    sendReport: (PhysicalVolumeButtonAction) -> Unit
+private fun doPhysicalGamepadButtonAction(
+    event: KeyEvent,
+    id: Int,
+    input: ByteArray,
+    sendHidReport: (Int, ByteArray) -> Unit
 ): Boolean {
-    return when (this) {
-        PhysicalVolumeButtonAction.DEFAULT -> false
-        else -> { sendReport(this); true }
+    when(event.action) {
+        KeyEvent.ACTION_DOWN -> sendHidReport(id, input)
+        KeyEvent.ACTION_UP -> sendHidReport(id, REMOTE_INPUT_NONE)
+        else -> return false
     }
+    return true
+}
+
+private fun handlePhysicalVolumeButton(
+    event: KeyEvent,
+    volumePhysicalButtonActionUp: VolumePhysicalButtonAction,
+    volumePhysicalButtonActionDown: VolumePhysicalButtonAction,
+    sendHidReport: (Int, ByteArray) -> Unit
+): Boolean {
+    val volumePhysicalButtonAction: VolumePhysicalButtonAction = when(event.keyCode) {
+        KeyEvent.KEYCODE_VOLUME_UP -> volumePhysicalButtonActionUp
+        KeyEvent.KEYCODE_VOLUME_DOWN -> volumePhysicalButtonActionDown
+        else -> return false
+    }
+
+    return sendPhysicalVolumeButtonAction(
+        event = event,
+        volumePhysicalButtonAction = volumePhysicalButtonAction,
+        sendHidReport = sendHidReport
+    )
+}
+
+private fun sendPhysicalVolumeButtonAction(
+    event: KeyEvent,
+    volumePhysicalButtonAction: VolumePhysicalButtonAction,
+    sendHidReport: (Int, ByteArray) -> Unit
+): Boolean {
+    if (volumePhysicalButtonAction == VolumePhysicalButtonAction.DEFAULT) return false
+
+    when(event.action) {
+        KeyEvent.ACTION_DOWN -> {
+            sendHidReport(
+                volumePhysicalButtonAction.hidReportId, volumePhysicalButtonAction.pressedBytes
+            )
+        }
+
+        KeyEvent.ACTION_UP -> {
+            sendHidReport(
+                volumePhysicalButtonAction.hidReportId, volumePhysicalButtonAction.releasedBytes
+            )
+        }
+
+        else -> return false
+    }
+
+    return true
 }

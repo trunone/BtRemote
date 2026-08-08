@@ -49,7 +49,7 @@ import com.atharok.btremote.common.utils.SOURCE_CODE_LINK
 import com.atharok.btremote.common.utils.WEB_SITE_LINK
 import com.atharok.btremote.common.utils.isDynamicColorsAvailable
 import com.atharok.btremote.domain.entities.RemoteNavigationEntity
-import com.atharok.btremote.domain.entities.remoteInput.PhysicalVolumeButtonAction
+import com.atharok.btremote.domain.entities.remoteInput.VolumePhysicalButtonAction
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.KeyboardLanguage
 import com.atharok.btremote.domain.entities.settings.AppearanceSettings
 import com.atharok.btremote.domain.entities.settings.RemoteSettings
@@ -241,9 +241,9 @@ fun SettingsScreen(
             SettingsListDialog(
                 title = R.string.assign_action_volume_up_button,
                 dialogMessage = null,
-                value = remoteSettings.physicalVolumeUpButtonAction,
-                onValueChange = { settingsViewModel.savePhysicalVolumeUpButtonAction(it) },
-                items = PhysicalVolumeButtonAction.entries,
+                value = remoteSettings.volumePhysicalButtonActionUp,
+                onValueChange = { settingsViewModel.saveVolumePhysicalButtonActionUp(it) },
+                items = VolumePhysicalButtonAction.entries,
                 convertValueToString = { context.getString(it.stringRes) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -256,9 +256,9 @@ fun SettingsScreen(
             SettingsListDialog(
                 title = R.string.assign_action_volume_down_button,
                 dialogMessage = null,
-                value = remoteSettings.physicalVolumeDownButtonAction,
-                onValueChange = { settingsViewModel.savePhysicalVolumeDownButtonAction(it) },
-                items = PhysicalVolumeButtonAction.entries,
+                value = remoteSettings.volumePhysicalButtonActionDown,
+                onValueChange = { settingsViewModel.saveVolumePhysicalButtonActionDown(it) },
+                items = VolumePhysicalButtonAction.entries,
                 convertValueToString = { context.getString(it.stringRes) },
                 modifier = Modifier
                     .fillMaxWidth()

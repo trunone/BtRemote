@@ -3,7 +3,7 @@ package com.atharok.btremote.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atharok.btremote.domain.entities.RemoteNavigationEntity
-import com.atharok.btremote.domain.entities.remoteInput.PhysicalVolumeButtonAction
+import com.atharok.btremote.domain.entities.remoteInput.VolumePhysicalButtonAction
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.KeyboardLanguage
 import com.atharok.btremote.domain.entities.settings.AppearanceSettings
 import com.atharok.btremote.domain.entities.settings.RemoteSettings
@@ -88,12 +88,12 @@ class SettingsViewModel(
         useCase.saveUseMouseNavigationByDefault(useMouseNavigationByDefault)
     }
 
-    fun savePhysicalVolumeUpButtonAction(physicalVolumeButtonAction: PhysicalVolumeButtonAction) = viewModelScope.launch {
-        useCase.savePhysicalVolumeUpButtonAction(physicalVolumeButtonAction)
+    fun saveVolumePhysicalButtonActionUp(volumePhysicalButtonAction: VolumePhysicalButtonAction) = viewModelScope.launch {
+        useCase.saveVolumePhysicalButtonActionUp(volumePhysicalButtonAction)
     }
 
-    fun savePhysicalVolumeDownButtonAction(physicalVolumeButtonAction: PhysicalVolumeButtonAction) = viewModelScope.launch {
-        useCase.savePhysicalVolumeDownButtonAction(physicalVolumeButtonAction)
+    fun saveVolumePhysicalButtonActionDown(volumePhysicalButtonAction: VolumePhysicalButtonAction) = viewModelScope.launch {
+        useCase.saveVolumePhysicalButtonActionDown(volumePhysicalButtonAction)
     }
 
     // ---- Others ----
