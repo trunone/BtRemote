@@ -31,18 +31,24 @@ class NotificationBroadcastReceiver: BroadcastReceiver(), KoinComponent {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         when(intent?.action) {
-            ACTION_VOLUME_UP -> sendReport(RemoteButtonProperties.VolumeUpButton.input)
-            ACTION_VOLUME_DOWN -> sendReport(RemoteButtonProperties.VolumeDownButton.input)
-            ACTION_MULTIMEDIA_PLAY_PAUSE -> sendReport(RemoteButtonProperties.PlayPauseButton.input)
-            ACTION_MULTIMEDIA_PREVIOUS -> sendReport(RemoteButtonProperties.RewindButton.input)
-            ACTION_MULTIMEDIA_NEXT -> sendReport(RemoteButtonProperties.ForwardButton.input)
-            ACTION_LEFT -> sendReport(RemoteButtonProperties.MenuLeftButton.input)
-            ACTION_RIGHT -> sendReport(RemoteButtonProperties.MenuRightButton.input)
-            ACTION_UP -> sendReport(RemoteButtonProperties.MenuUpButton.input)
-            ACTION_DOWN -> sendReport(RemoteButtonProperties.MenuDownButton.input)
-            ACTION_PICK -> sendReport(RemoteButtonProperties.MenuPickButton.input)
-            ACTION_BACK -> sendReport(RemoteButtonProperties.BackButton.input)
-            ACTION_HOME -> sendReport(RemoteButtonProperties.HomeButton.input)
+            ACTION_VOLUME_UP -> sendRemoteReport(RemoteButtonProperties.VolumeUpButton.input)
+            ACTION_VOLUME_DOWN -> sendRemoteReport(RemoteButtonProperties.VolumeDownButton.input)
+            ACTION_MULTIMEDIA_PLAY_PAUSE -> sendRemoteReport(RemoteButtonProperties.PlayPauseButton.input)
+            ACTION_MULTIMEDIA_PREVIOUS -> sendRemoteReport(RemoteButtonProperties.RewindButton.input)
+            ACTION_MULTIMEDIA_NEXT -> sendRemoteReport(RemoteButtonProperties.ForwardButton.input)
+            ACTION_LEFT -> sendRemoteReport(RemoteButtonProperties.MenuLeftButton.input)
+            ACTION_RIGHT -> sendRemoteReport(RemoteButtonProperties.MenuRightButton.input)
+            ACTION_UP -> sendRemoteReport(RemoteButtonProperties.MenuUpButton.input)
+            ACTION_DOWN -> sendRemoteReport(RemoteButtonProperties.MenuDownButton.input)
+            ACTION_PICK -> {
+                if(useCase.useEnterForSelection()) {
+                    sendKeyboardReport(RemoteButtonProperties.KeyboardEnterButton.input)
+                } else {
+                    sendRemoteReport(RemoteButtonProperties.MenuPickButton.input)
+                }
+            }
+            ACTION_BACK -> sendRemoteReport(RemoteButtonProperties.BackButton.input)
+            ACTION_HOME -> sendRemoteReport(RemoteButtonProperties.HomeButton.input)
             ACTION_DISCONNECT -> {
                 useCase.disconnectDevice()
                 /*useCase.stopHidProfile()
@@ -52,8 +58,13 @@ class NotificationBroadcastReceiver: BroadcastReceiver(), KoinComponent {
         }
     }
 
-    private fun sendReport(bytes: ByteArray) {
+    private fun sendRemoteReport(bytes: ByteArray) {
         useCase.sendRemoteReport(bytes)
         useCase.sendRemoteReport(REMOTE_INPUT_NONE)
+    }
+
+    private fun sendKeyboardReport(bytes: ByteArray) {
+        useCase.sendKeyboardReport(bytes)
+        useCase.sendKeyboardReport(REMOTE_INPUT_NONE)
     }
 }

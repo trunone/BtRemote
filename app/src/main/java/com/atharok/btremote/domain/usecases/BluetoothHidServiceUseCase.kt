@@ -1,5 +1,6 @@
 package com.atharok.btremote.domain.usecases
 
+import com.atharok.btremote.common.utils.KEYBOARD_REPORT_ID
 import com.atharok.btremote.common.utils.REMOTE_REPORT_ID
 import com.atharok.btremote.domain.entities.DeviceHidConnectionState
 import com.atharok.btremote.domain.repositories.BluetoothRepository
@@ -34,8 +35,20 @@ class BluetoothHidServiceUseCase(
         return bluetoothRepository.getDeviceHidConnectionState()
     }
 
+    fun sendReport(id: Int, bytes: ByteArray): Boolean {
+        return bluetoothRepository.sendReport(id, bytes)
+    }
+
     fun sendRemoteReport(bytes: ByteArray): Boolean {
-        return bluetoothRepository.sendReport(REMOTE_REPORT_ID, bytes)
+        return sendReport(REMOTE_REPORT_ID, bytes)
+    }
+
+    fun sendKeyboardReport(bytes: ByteArray): Boolean {
+        return sendReport(KEYBOARD_REPORT_ID, bytes)
+    }
+
+    fun useEnterForSelection(): Boolean = runBlocking {
+        dataStoreRepository.remoteSettingsFlow.first().useEnterForSelection
     }
 
     fun showRemoteButtonsInNotification(): Flow<Boolean> = dataStoreRepository.showRemoteButtonsInNotification()
