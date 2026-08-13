@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.sp
 
 class MediaControlWidgetDimensions {
 
+    val height: Dp
     val padding: Dp
     val minIconSize: Dp
     val maxIconSize: Dp
@@ -14,12 +15,14 @@ class MediaControlWidgetDimensions {
     val maxTextSp: TextUnit
 
     private constructor(
+        height: Dp,
         padding: Dp,
         minIconSize: Dp,
         maxIconSize: Dp,
         minTextSp: TextUnit,
         maxTextSp: TextUnit,
     ) {
+        this.height = height
         this.padding = padding
         this.minTextSp = minTextSp
         this.maxTextSp = maxTextSp
@@ -28,45 +31,22 @@ class MediaControlWidgetDimensions {
     }
 
     companion object {
-        fun calculateDimensions(height: Dp): MediaControlWidgetDimensions {
-            return when {
-                height > 112.dp -> {
-                    MediaControlWidgetDimensions(
-                        padding = 12.dp,
-                        minIconSize = 40.dp,
-                        maxIconSize = 48.dp,
-                        minTextSp = 11.sp,
-                        maxTextSp = 16.sp
-                    )
-                }
-                height > 100.dp -> {
-                    MediaControlWidgetDimensions(
-                        padding = 10.dp,
-                        minIconSize = 36.dp,
-                        maxIconSize = 44.dp,
-                        minTextSp = 10.sp,
-                        maxTextSp = 15.sp
-                    )
-                }
-                height > 88.dp -> {
-                    MediaControlWidgetDimensions(
-                        padding = 8.dp,
-                        minIconSize = 32.dp,
-                        maxIconSize = 40.dp,
-                        minTextSp = 10.sp,
-                        maxTextSp = 14.sp
-                    )
-                }
-                else -> {
-                    MediaControlWidgetDimensions(
-                        padding = 6.dp,
-                        minIconSize = 28.dp,
-                        maxIconSize = 36.dp,
-                        minTextSp = 9.sp,
-                        maxTextSp = 13.sp
-                    )
-                }
-            }
+
+        val HEIGHT_THRESHOLD: Dp = 192.dp
+        val BUTTON_SPACES: Dp = 2.dp
+
+        fun calculateDimensions(width: Dp, height: Dp): MediaControlWidgetDimensions {
+            val padding = 12.dp
+            val divH = if(height > HEIGHT_THRESHOLD) 5.5f else 2.25f
+            val iconSize: Dp = minOf((height - padding * 2) / divH, (width - padding * 2) / 5.5f)
+            return MediaControlWidgetDimensions(
+                height = height,
+                padding = 12.dp,
+                minIconSize = iconSize - 8.dp,
+                maxIconSize = iconSize,
+                minTextSp = 11.sp,
+                maxTextSp = 16.sp
+            )
         }
     }
 }

@@ -8,9 +8,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.glance.Button
+import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
+import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
@@ -28,16 +30,27 @@ import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
+import androidx.glance.layout.wrapContentWidth
 import com.atharok.btremote.R
 import com.atharok.btremote.domain.usecases.BluetoothHidServiceUseCase
 import com.atharok.btremote.presentation.activities.MainActivity
+import com.atharok.btremote.presentation.glance.MediaControlWidgetDimensions.Companion.BUTTON_SPACES
+import com.atharok.btremote.presentation.glance.MediaControlWidgetDimensions.Companion.HEIGHT_THRESHOLD
 import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver
+import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_BACK
+import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_DOWN
+import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_HOME
+import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_LEFT
 import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_MULTIMEDIA_NEXT
 import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_MULTIMEDIA_PLAY_PAUSE
 import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_MULTIMEDIA_PREVIOUS
+import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_PICK
+import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_RIGHT
+import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_UP
 import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_VOLUME_DOWN
 import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_VOLUME_UP
 import org.koin.core.component.KoinComponent
@@ -55,6 +68,7 @@ class MediaControlWidget : GlanceAppWidget(), KoinComponent {
         provideContent {
             GlanceTheme {
                 val dimensions = MediaControlWidgetDimensions.calculateDimensions(
+                    width = LocalSize.current.width,
                     height = LocalSize.current.height
                 )
                 val state by bluetoothHidServiceUseCase.getDeviceHidConnectionState().collectAsState()
@@ -92,7 +106,19 @@ class MediaControlWidget : GlanceAppWidget(), KoinComponent {
                 connectionState = context.getString(R.string.connected_off),
                 dimensions = dimensions
             )
+
             Spacer(GlanceModifier.defaultWeight())
+
+            if(dimensions.height > HEIGHT_THRESHOLD) {
+                Image(
+                    provider = ImageProvider(R.drawable.round_link_off_24),
+                    contentDescription = context.getString(R.string.connected_off),
+                    modifier = GlanceModifier.fillMaxSize().defaultWeight(),
+                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant)
+                )
+                Spacer(GlanceModifier.defaultWeight())
+            }
+
             Button(
                 text = context.getString(R.string.connect),
                 onClick = actionStartActivity(
@@ -115,7 +141,7 @@ class MediaControlWidget : GlanceAppWidget(), KoinComponent {
                 .fillMaxSize()
                 .padding(dimensions.padding)
                 .background(GlanceTheme.colors.widgetBackground),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             Row(
                 modifier = GlanceModifier.fillMaxWidth(),
@@ -137,8 +163,8 @@ class MediaControlWidget : GlanceAppWidget(), KoinComponent {
                         intent = getStartActivityIntent(context)
                     ),
                     modifier = GlanceModifier.size(dimensions.minIconSize),
-                    backgroundColor = GlanceTheme.colors.primary,
-                    contentColor = GlanceTheme.colors.onPrimary
+                    backgroundColor = GlanceTheme.colors.tertiary,
+                    contentColor = GlanceTheme.colors.onTertiary
                 )
             }
 
@@ -147,7 +173,7 @@ class MediaControlWidget : GlanceAppWidget(), KoinComponent {
             Row(
                 modifier = GlanceModifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.Start,
-                verticalAlignment = Alignment.Bottom
+                verticalAlignment = Alignment.Top
             ) {
 
                 // Multimedia
@@ -160,7 +186,9 @@ class MediaControlWidget : GlanceAppWidget(), KoinComponent {
                     backgroundDrawable = R.drawable.glance_button_shape_left,
                     dimensions = dimensions
                 )
-                Spacer(GlanceModifier.width(2.dp))
+
+                Spacer(GlanceModifier.width(BUTTON_SPACES))
+
                 GlanceCustomIconButton(
                     imageProvider = ImageProvider(R.drawable.round_play_pause_24),
                     contentDescription = context.getString(R.string.play),
@@ -169,7 +197,9 @@ class MediaControlWidget : GlanceAppWidget(), KoinComponent {
                     backgroundDrawable = R.drawable.glance_button_shape_middle,
                     dimensions = dimensions
                 )
-                Spacer(GlanceModifier.width(2.dp))
+
+                Spacer(GlanceModifier.width(BUTTON_SPACES))
+
                 GlanceCustomIconButton(
                     imageProvider = ImageProvider(R.drawable.round_fast_forward_24),
                     contentDescription = context.getString(R.string.forward),
@@ -191,21 +221,57 @@ class MediaControlWidget : GlanceAppWidget(), KoinComponent {
                     onClick = mediaControlAction(context, ACTION_VOLUME_DOWN),
                     rippleOverride = R.drawable.glance_button_ripple_left,
                     backgroundDrawable = R.drawable.glance_button_shape_left,
-                    backgroundColor = GlanceTheme.colors.tertiary,
-                    contentColor = GlanceTheme.colors.onTertiary,
                     dimensions = dimensions
                 )
-                Spacer(GlanceModifier.width(2.dp))
+
+                Spacer(GlanceModifier.width(BUTTON_SPACES))
+
                 GlanceCustomIconButton(
                     imageProvider = ImageProvider(R.drawable.round_volume_up_24),
                     contentDescription = context.getString(R.string.volume_up),
                     onClick = mediaControlAction(context, ACTION_VOLUME_UP),
                     rippleOverride = R.drawable.glance_button_ripple_right,
                     backgroundDrawable = R.drawable.glance_button_shape_right,
-                    backgroundColor = GlanceTheme.colors.tertiary,
-                    contentColor = GlanceTheme.colors.onTertiary,
                     dimensions = dimensions
                 )
+            }
+
+            if(dimensions.height > HEIGHT_THRESHOLD) {
+
+                Spacer(GlanceModifier.defaultWeight())
+
+                Row(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    GlanceDpad(
+                        context = context,
+                        dimensions = dimensions,
+                        modifier = GlanceModifier
+                    )
+
+                    Spacer(GlanceModifier.defaultWeight())
+
+                    GlanceCustomIconButton(
+                        imageProvider = ImageProvider(R.drawable.round_arrow_back_24),
+                        contentDescription = context.getString(R.string.back),
+                        onClick = mediaControlAction(context, ACTION_BACK),
+                        rippleOverride = R.drawable.glance_button_ripple_left,
+                        backgroundDrawable = R.drawable.glance_button_shape_left,
+                        dimensions = dimensions
+                    )
+
+                    Spacer(GlanceModifier.width(BUTTON_SPACES))
+
+                    GlanceCustomIconButton(
+                        imageProvider = ImageProvider(R.drawable.round_home_24),
+                        contentDescription = context.getString(R.string.home),
+                        onClick = mediaControlAction(context, ACTION_HOME),
+                        rippleOverride = R.drawable.glance_button_ripple_right,
+                        backgroundDrawable = R.drawable.glance_button_shape_right,
+                        dimensions = dimensions
+                    )
+                }
             }
         }
     }
@@ -218,4 +284,105 @@ class MediaControlWidget : GlanceAppWidget(), KoinComponent {
 
     private fun mediaControlAction(context: Context, action: String) =
         actionSendBroadcast(Intent(context, NotificationBroadcastReceiver::class.java).apply { setAction(action) })
+
+    /**
+     * D-Pad
+     */
+    @Composable
+    fun GlanceDpad(
+        context: Context,
+        dimensions: MediaControlWidgetDimensions,
+        modifier: GlanceModifier = GlanceModifier
+    ) {
+        Column(modifier = modifier) {
+            Row(
+                modifier = GlanceModifier.wrapContentWidth(),
+                horizontalAlignment = Alignment.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(GlanceModifier.width(dimensions.maxIconSize))
+
+                Spacer(GlanceModifier.width(BUTTON_SPACES))
+
+                GlanceCustomIconButton(
+                    imageProvider = ImageProvider(R.drawable.round_keyboard_arrow_up_24),
+                    contentDescription = context.getString(R.string.up),
+                    onClick = mediaControlAction(context, ACTION_UP),
+                    rippleOverride = R.drawable.glance_button_ripple_up,
+                    backgroundDrawable = R.drawable.glance_button_shape_up,
+                    dimensions = dimensions
+                )
+
+                Spacer(GlanceModifier.width(BUTTON_SPACES))
+
+                Spacer(GlanceModifier.width(dimensions.maxIconSize))
+            }
+
+            Spacer(GlanceModifier.height(BUTTON_SPACES))
+
+            Row(
+                modifier = GlanceModifier.wrapContentWidth(),
+                horizontalAlignment = Alignment.Start,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                GlanceCustomIconButton(
+                    imageProvider = ImageProvider(R.drawable.round_keyboard_arrow_left_24),
+                    contentDescription = context.getString(R.string.left),
+                    onClick = mediaControlAction(context, ACTION_LEFT),
+                    rippleOverride = R.drawable.glance_button_ripple_left,
+                    backgroundDrawable = R.drawable.glance_button_shape_left,
+                    dimensions = dimensions
+                )
+
+                Spacer(GlanceModifier.width(BUTTON_SPACES))
+
+                GlanceCustomIconButton(
+                    imageProvider = ImageProvider(R.drawable.outline_circle_24),
+                    contentDescription = context.getString(R.string.pick),
+                    onClick = mediaControlAction(context, ACTION_PICK),
+                    rippleOverride = R.drawable.glance_button_ripple_middle,
+                    backgroundDrawable = R.drawable.glance_button_shape_middle,
+                    dimensions = dimensions
+                )
+
+                Spacer(GlanceModifier.width(BUTTON_SPACES))
+
+                GlanceCustomIconButton(
+                    imageProvider = ImageProvider(R.drawable.round_keyboard_arrow_right_24),
+                    contentDescription = context.getString(R.string.right),
+                    onClick = mediaControlAction(context, ACTION_RIGHT),
+                    rippleOverride = R.drawable.glance_button_ripple_right,
+                    backgroundDrawable = R.drawable.glance_button_shape_right,
+                    backgroundColor = GlanceTheme.colors.primary,
+                    contentColor = GlanceTheme.colors.onPrimary,
+                    dimensions = dimensions
+                )
+            }
+
+            Spacer(GlanceModifier.height(BUTTON_SPACES))
+
+            Row(
+                modifier = GlanceModifier.wrapContentWidth(),
+                horizontalAlignment = Alignment.Start,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Spacer(GlanceModifier.width(dimensions.maxIconSize))
+
+                Spacer(GlanceModifier.width(BUTTON_SPACES))
+
+                GlanceCustomIconButton(
+                    imageProvider = ImageProvider(R.drawable.round_keyboard_arrow_down_24),
+                    contentDescription = context.getString(R.string.down),
+                    onClick = mediaControlAction(context, ACTION_DOWN),
+                    rippleOverride = R.drawable.glance_button_ripple_down,
+                    backgroundDrawable = R.drawable.glance_button_shape_down,
+                    dimensions = dimensions
+                )
+
+                Spacer(GlanceModifier.width(BUTTON_SPACES))
+
+                Spacer(GlanceModifier.width(dimensions.maxIconSize))
+            }
+        }
+    }
 }

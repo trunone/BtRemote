@@ -43,7 +43,9 @@ fun GlanceWidgetTitle(
             ),
             maxLines = 1
         )
+
         Spacer(GlanceModifier.defaultWeight())
+
         Text(
             text = connectionState,
             style = TextStyle(
