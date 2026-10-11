@@ -207,11 +207,6 @@ private fun AdditionalKeyboardKeysLayout(
             sendKeyboardKeyReport = sendKeyboardKeyReport,
             spaceBetweenButtons = spaceBetweenButtons
         )
-
-        CombinationKeysLayout(
-            sendKeyboardKeyReport = sendKeyboardKeyReport,
-            spaceBetweenButtons = spaceBetweenButtons
-        )
     }
 }
 
@@ -240,6 +235,38 @@ private fun SpecialKeysLayout(
                 modifier = Modifier.weight(1f)
             )
 
+            VirtualTextKeyboardButton(
+                text = "Ins",
+                input = byteArrayOf(0x00, KeyboardKey.KEY_INSERT.byte),
+                sendKeyboardKeyReport = sendKeyboardKeyReport,
+                modifier = Modifier.weight(1f)
+            )
+
+            VirtualTextKeyboardButton(
+                text = "Home",
+                input = byteArrayOf(0x00, KeyboardKey.KEY_HOME.byte),
+                sendKeyboardKeyReport = sendKeyboardKeyReport,
+                modifier = Modifier.weight(1f)
+            )
+
+            VirtualTextKeyboardButton(
+                text = "End",
+                input = byteArrayOf(0x00, KeyboardKey.KEY_END.byte),
+                sendKeyboardKeyReport = sendKeyboardKeyReport,
+                modifier = Modifier.weight(1f)
+            )
+
+            VirtualKeyboardButton(
+                properties = RemoteButtonProperties.KeyboardPrintScreenButton,
+                sendKeyboardKeyReport = sendKeyboardKeyReport,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(spaceBetweenButtons)
+        ) {
             VirtualKeyboardButton(
                 properties = RemoteButtonProperties.KeyboardPageUp,
                 sendKeyboardKeyReport = sendKeyboardKeyReport,
@@ -252,8 +279,16 @@ private fun SpecialKeysLayout(
                 modifier = Modifier.weight(1f)
             )
 
-            VirtualKeyboardButton(
-                properties = RemoteButtonProperties.KeyboardPrintScreenButton,
+            VirtualTextKeyboardButton(
+                text = stringResource(id = R.string.delete),
+                input = byteArrayOf(0x00, KeyboardKey.KEY_FORWARD_DELETE.byte),
+                sendKeyboardKeyReport = sendKeyboardKeyReport,
+                modifier = Modifier.weight(1f)
+            )
+
+            VirtualTextKeyboardButton(
+                text = "Caps Lock",
+                input = byteArrayOf(0x00, KeyboardKey.KEY_CAPS_LOCK.byte),
                 sendKeyboardKeyReport = sendKeyboardKeyReport,
                 modifier = Modifier.weight(1f)
             )
@@ -343,44 +378,6 @@ private fun FunctionKeysLayout(
             VirtualTextKeyboardButton("F10", byteArrayOf(0x00, KeyboardKey.KEY_F10.byte), sendKeyboardKeyReport, Modifier.weight(1f))
             VirtualTextKeyboardButton("F11", byteArrayOf(0x00, KeyboardKey.KEY_F11.byte), sendKeyboardKeyReport, Modifier.weight(1f))
             VirtualTextKeyboardButton("F12", byteArrayOf(0x00, KeyboardKey.KEY_F12.byte), sendKeyboardKeyReport, Modifier.weight(1f))
-        }
-    }
-}
-
-@Composable
-private fun CombinationKeysLayout(
-    sendKeyboardKeyReport: (ByteArray) -> Unit,
-    spaceBetweenButtons: Dp
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(spaceBetweenButtons)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(spaceBetweenButtons)
-        ) {
-            VirtualTextKeyboardButton("Ctrl + A", byteArrayOf(KeyboardKey.KEY_CTRL_LEFT.byte, KeyboardKey.ROW_3_KEY_00.byte), sendKeyboardKeyReport, Modifier.weight(1f))
-            VirtualTextKeyboardButton("Ctrl + C", byteArrayOf(KeyboardKey.KEY_CTRL_LEFT.byte, KeyboardKey.ROW_4_KEY_03.byte), sendKeyboardKeyReport, Modifier.weight(1f))
-            VirtualTextKeyboardButton("Ctrl + V", byteArrayOf(KeyboardKey.KEY_CTRL_LEFT.byte, KeyboardKey.ROW_4_KEY_04.byte), sendKeyboardKeyReport, Modifier.weight(1f))
-            VirtualTextKeyboardButton("Ctrl + X", byteArrayOf(KeyboardKey.KEY_CTRL_LEFT.byte, KeyboardKey.ROW_4_KEY_02.byte), sendKeyboardKeyReport, Modifier.weight(1f))
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(spaceBetweenButtons)
-        ) {
-            VirtualTextKeyboardButton("Ctrl + Z", byteArrayOf(KeyboardKey.KEY_CTRL_LEFT.byte, KeyboardKey.ROW_4_KEY_01.byte), sendKeyboardKeyReport, Modifier.weight(1f))
-            VirtualTextKeyboardButton("Alt + Tab", byteArrayOf(KeyboardKey.KEY_ALT.byte, KeyboardKey.KEY_TAB.byte), sendKeyboardKeyReport, Modifier.weight(1f))
-            VirtualTextKeyboardButton("Alt + F4", byteArrayOf(KeyboardKey.KEY_ALT.byte, KeyboardKey.KEY_F4.byte), sendKeyboardKeyReport, Modifier.weight(1f))
-            VirtualTextKeyboardButton("Win", byteArrayOf(KeyboardKey.KEY_META_LEFT.byte, 0x00), sendKeyboardKeyReport, Modifier.weight(1f))
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(spaceBetweenButtons)
-        ) {
-            VirtualTextKeyboardButton("Win + D", byteArrayOf(KeyboardKey.KEY_META_LEFT.byte, KeyboardKey.ROW_3_KEY_02.byte), sendKeyboardKeyReport, Modifier.weight(1f))
-            VirtualTextKeyboardButton("Ctrl + Alt + Del", byteArrayOf((KeyboardKey.KEY_CTRL_LEFT.byte + KeyboardKey.KEY_ALT.byte).toByte(), KeyboardKey.KEY_DELETE.byte), sendKeyboardKeyReport, Modifier.weight(1.5f))
         }
     }
 }

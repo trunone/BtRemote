@@ -1,7 +1,6 @@
 package com.atharok.btremote
 
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.KeyboardKey
-import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -33,38 +32,10 @@ class KeyboardKeyTest {
         assertEquals(0x46.toByte(), KeyboardKey.KEY_PRINT_SCREEN.byte)
         assertEquals(0x4B.toByte(), KeyboardKey.KEY_PAGE_UP.byte)
         assertEquals(0x4E.toByte(), KeyboardKey.KEY_PAGE_DOWN.byte)
-    }
-
-    @Test
-    fun testCombinationKeyInputs() {
-        val ctrlA = byteArrayOf(KeyboardKey.KEY_CTRL_LEFT.byte, KeyboardKey.ROW_3_KEY_00.byte)
-        assertArrayEquals(byteArrayOf(0x01, 0x04), ctrlA)
-
-        val ctrlC = byteArrayOf(KeyboardKey.KEY_CTRL_LEFT.byte, KeyboardKey.ROW_4_KEY_03.byte)
-        assertArrayEquals(byteArrayOf(0x01, 0x06), ctrlC)
-
-        val ctrlV = byteArrayOf(KeyboardKey.KEY_CTRL_LEFT.byte, KeyboardKey.ROW_4_KEY_04.byte)
-        assertArrayEquals(byteArrayOf(0x01, 0x19), ctrlV)
-
-        val ctrlX = byteArrayOf(KeyboardKey.KEY_CTRL_LEFT.byte, KeyboardKey.ROW_4_KEY_02.byte)
-        assertArrayEquals(byteArrayOf(0x01, 0x1B), ctrlX)
-
-        val ctrlZ = byteArrayOf(KeyboardKey.KEY_CTRL_LEFT.byte, KeyboardKey.ROW_4_KEY_01.byte)
-        assertArrayEquals(byteArrayOf(0x01, 0x1D), ctrlZ)
-
-        val altTab = byteArrayOf(KeyboardKey.KEY_ALT.byte, KeyboardKey.KEY_TAB.byte)
-        assertArrayEquals(byteArrayOf(0x04, 0x2B), altTab)
-
-        val altF4 = byteArrayOf(KeyboardKey.KEY_ALT.byte, KeyboardKey.KEY_F4.byte)
-        assertArrayEquals(byteArrayOf(0x04, 0x3D), altF4)
-
-        val win = byteArrayOf(KeyboardKey.KEY_META_LEFT.byte, 0x00)
-        assertArrayEquals(byteArrayOf(0x08, 0x00), win)
-
-        val winD = byteArrayOf(KeyboardKey.KEY_META_LEFT.byte, KeyboardKey.ROW_3_KEY_02.byte)
-        assertArrayEquals(byteArrayOf(0x08, 0x07), winD)
-
-        val ctrlAltDel = byteArrayOf((KeyboardKey.KEY_CTRL_LEFT.byte + KeyboardKey.KEY_ALT.byte).toByte(), KeyboardKey.KEY_DELETE.byte)
-        assertArrayEquals(byteArrayOf(0x05, 0x2A), ctrlAltDel)
+        assertEquals(0x49.toByte(), KeyboardKey.KEY_INSERT.byte)
+        assertEquals(0x4A.toByte(), KeyboardKey.KEY_HOME.byte)
+        assertEquals(0x4D.toByte(), KeyboardKey.KEY_END.byte)
+        assertEquals(0x4C.toByte(), KeyboardKey.KEY_FORWARD_DELETE.byte)
+        assertEquals(0x39.toByte(), KeyboardKey.KEY_CAPS_LOCK.byte)
     }
 }
