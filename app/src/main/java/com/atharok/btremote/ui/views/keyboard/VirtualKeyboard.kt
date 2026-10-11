@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import com.atharok.btremote.R
 import com.atharok.btremote.common.utils.AppIcons
 import com.atharok.btremote.common.utils.REMOTE_INPUT_NONE
@@ -94,7 +96,7 @@ private fun StatelessKeyboardView(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(unbounded = true),
+                .wrapContentHeight(),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -137,7 +139,7 @@ private fun StatelessKeyboardView(
                 sendKeyboardKeyReport = sendKeyboardKeyReport,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(unbounded = true)
+                    .wrapContentHeight()
             )
         }
     }
@@ -349,7 +351,7 @@ private fun VirtualKeyboardButton(
     RemoteIconSurfaceButton(
         properties = properties,
         sendKeyReport = sendKeyboardKeyReport,
-        modifier = modifier,
+        modifier = modifier.height(40.dp),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.keyboard_key_corner_radius)),
         elevation = surfaceElevationHigh(),
         iconFillFraction = 1f,
@@ -368,7 +370,7 @@ private fun VirtualTextKeyboardButton(
         text = text,
         touchDown = { sendKeyboardKeyReport(input) },
         touchUp = { sendKeyboardKeyReport(REMOTE_INPUT_NONE) },
-        modifier = modifier,
+        modifier = modifier.height(40.dp),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.keyboard_key_corner_radius)),
         elevation = surfaceElevationHigh()
     )
