@@ -77,6 +77,11 @@ enum class KeyboardKey(val byte: Byte) {
     KEY_UP_ARROW(0x52),
     KEY_PAGE_UP(0x4B),
     KEY_PAGE_DOWN(0x4E),
+    KEY_INSERT(0x49),
+    KEY_HOME(0x4A),
+    KEY_END(0x4D),
+    KEY_FORWARD_DELETE(0x4C),
+    KEY_CAPS_LOCK(0x39),
 
     // Modifier keys
     KEY_SHIFT_LEFT(0x02),
