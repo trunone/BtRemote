@@ -19,8 +19,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -35,12 +37,53 @@ import androidx.compose.ui.unit.dp
 import com.atharok.btremote.R
 import com.atharok.btremote.common.utils.AppIcons
 import com.atharok.btremote.common.utils.REMOTE_INPUT_NONE
+import com.atharok.btremote.common.utils.getKeyboardLayout
 import com.atharok.btremote.domain.entities.remoteInput.RemoteButtonProperties
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.KeyboardKey
+import com.atharok.btremote.domain.entities.remoteInput.keyboard.KeyboardLanguage
+import com.atharok.btremote.domain.entities.remoteInput.keyboard.virtualKeyboard.VirtualKeyboardLayout
 import com.atharok.btremote.ui.components.BasicIconButton
 import com.atharok.btremote.ui.components.customButtons.RemoteIconSurfaceButton
 import com.atharok.btremote.ui.components.customButtons.TextKeyboardKey
 import com.atharok.btremote.ui.theme.surfaceElevationHigh
+
+@Composable
+fun VirtualKeyboard(
+    mustClearInputField: Boolean,
+    keyboardLanguage: KeyboardLanguage,
+    sendKeyboardKeyReport: (ByteArray) -> Unit,
+    sendTextReport: (String, VirtualKeyboardLayout, Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val focusRequester = remember { FocusRequester() }
+    val textState = remember { mutableStateOf("") }
+
+    var virtualKeyboardLayout: VirtualKeyboardLayout by remember {
+        mutableStateOf(getKeyboardLayout(keyboardLanguage))
+    }
+
+    LaunchedEffect(keyboardLanguage) {
+        virtualKeyboardLayout = getKeyboardLayout(keyboardLanguage)
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+    StatelessKeyboardView(
+        mustClearInputField = mustClearInputField,
+        focusRequester = focusRequester,
+        text = textState.value,
+        onTextChange = {
+            textState.value = it
+        },
+        sendKeyboardKeyReport = sendKeyboardKeyReport,
+        sendTextReport = { text, shouldSendEnter ->
+            sendTextReport(text, virtualKeyboardLayout, shouldSendEnter)
+        },
+        modifier = modifier
+    )
+}
 
 @Composable
 fun VirtualKeyboardModalBottomSheet(

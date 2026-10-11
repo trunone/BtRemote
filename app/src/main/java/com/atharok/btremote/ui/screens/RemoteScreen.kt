@@ -67,8 +67,7 @@ import com.atharok.btremote.ui.components.MoreOverflowMenu
 import com.atharok.btremote.ui.theme.surfaceElevationMedium
 import com.atharok.btremote.ui.views.RemoteScreenHelpModalBottomSheet
 import com.atharok.btremote.ui.views.keyboard.AdvancedKeyboard
-import com.atharok.btremote.ui.views.keyboard.AdvancedKeyboardModalBottomSheet
-import com.atharok.btremote.ui.views.keyboard.VirtualKeyboardModalBottomSheet
+import com.atharok.btremote.ui.views.keyboard.VirtualKeyboard
 import com.atharok.btremote.ui.views.mouse.MousePadLayout
 import com.atharok.btremote.ui.views.remote.MinimalistRemoteView
 import com.atharok.btremote.ui.views.remote.MoreButtonsDialog
@@ -138,11 +137,14 @@ fun RemoteScreen(
         remoteLayout = {
             RemoteLayout(
                 useMinimalistRemote = remoteSettings.useMinimalistRemote,
-                isAdvancedKeyboardVisible = remoteSettings.useAdvancedKeyboard && remoteSettings.useAdvancedKeyboardIntegrated && isKeyboardVisible,
-                onMoreButtonsVisibleChanged = { isMoreButtonsVisible = !isMoreButtonsVisible },
+                isKeyboardVisible = isKeyboardVisible,
+                useAdvancedKeyboard = remoteSettings.useAdvancedKeyboard,
                 keyboardLanguage = remoteSettings.keyboardLanguage,
+                mustClearInputField = remoteSettings.mustClearInputField,
+                onMoreButtonsVisibleChanged = { isMoreButtonsVisible = !isMoreButtonsVisible },
                 sendRemoteKeyReport = remoteViewModel.sendRemoteReport,
-                sendKeyboardKeyReport = remoteViewModel.sendKeyboardReport
+                sendKeyboardKeyReport = remoteViewModel.sendKeyboardReport,
+                sendTextReport = remoteViewModel.sendTextReport
             )
         },
         navigationLayout = {
@@ -172,16 +174,6 @@ fun RemoteScreen(
                     RemoteScreenHelpModalBottomSheet(
                         onDismissRequest = { isHelpBottomSheetVisible = false },
                         modifier = modifier
-                    )
-                }
-                isKeyboardVisible && (!remoteSettings.useAdvancedKeyboard || !remoteSettings.useAdvancedKeyboardIntegrated) -> {
-                    KeyboardModalBottomSheet(
-                        useAdvancedKeyboard = remoteSettings.useAdvancedKeyboard,
-                        keyboardLanguage = remoteSettings.keyboardLanguage,
-                        mustClearInputField = remoteSettings.mustClearInputField,
-                        sendKeyboardKeyReport = remoteViewModel.sendKeyboardReport,
-                        sendTextReport = remoteViewModel.sendTextReport,
-                        onShowKeyboardChanged = { isKeyboardVisible = it }
                     )
                 }
                 isMoreButtonsVisible -> {
@@ -354,22 +346,37 @@ private fun RemotePortraitView(
 @Composable
 private fun RemoteLayout(
     useMinimalistRemote: Boolean,
-    isAdvancedKeyboardVisible: Boolean,
-    onMoreButtonsVisibleChanged: () -> Unit,
+    isKeyboardVisible: Boolean,
+    useAdvancedKeyboard: Boolean,
     keyboardLanguage: KeyboardLanguage,
+    mustClearInputField: Boolean,
+    onMoreButtonsVisibleChanged: () -> Unit,
     sendRemoteKeyReport: (ByteArray) -> Unit,
-    sendKeyboardKeyReport: (ByteArray) -> Unit
+    sendKeyboardKeyReport: (ByteArray) -> Unit,
+    sendTextReport: (String, VirtualKeyboardLayout, Boolean) -> Unit
 ) {
-    FadeAnimatedContent(targetState = isAdvancedKeyboardVisible) {
+    FadeAnimatedContent(targetState = isKeyboardVisible) {
         if (it) {
-            AdvancedKeyboard(
-                keyboardLanguage = keyboardLanguage,
-                sendKeyboardKeyReport = sendKeyboardKeyReport,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_large)),
-                keyElevation = surfaceElevationMedium()
-            )
+            if (useAdvancedKeyboard) {
+                AdvancedKeyboard(
+                    keyboardLanguage = keyboardLanguage,
+                    sendKeyboardKeyReport = sendKeyboardKeyReport,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_large)),
+                    keyElevation = surfaceElevationMedium()
+                )
+            } else {
+                VirtualKeyboard(
+                    mustClearInputField = mustClearInputField,
+                    keyboardLanguage = keyboardLanguage,
+                    sendKeyboardKeyReport = sendKeyboardKeyReport,
+                    sendTextReport = sendTextReport,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_large))
+                )
+            }
         } else {
             RemoteButtonsLayouts(
                 useMinimalistRemote = useMinimalistRemote,
@@ -475,40 +482,6 @@ private fun RemotePadLayout(
     }
 }
 
-@Composable
-private fun KeyboardModalBottomSheet(
-    useAdvancedKeyboard: Boolean,
-    keyboardLanguage: KeyboardLanguage,
-    mustClearInputField: Boolean,
-    sendKeyboardKeyReport: (ByteArray) -> Unit,
-    sendTextReport: (String, VirtualKeyboardLayout, Boolean) -> Unit,
-    onShowKeyboardChanged: (Boolean) -> Unit,
-) {
-    if (useAdvancedKeyboard) {
-        AdvancedKeyboardModalBottomSheet(
-            keyboardLanguage = keyboardLanguage,
-            sendKeyboardKeyReport = sendKeyboardKeyReport,
-            onShowKeyboardBottomSheetChanged = onShowKeyboardChanged
-        )
-    } else {
-        var virtualKeyboardLayout: VirtualKeyboardLayout by remember {
-            mutableStateOf(getKeyboardLayout(keyboardLanguage))
-        }
-
-        LaunchedEffect(keyboardLanguage) {
-            virtualKeyboardLayout = getKeyboardLayout(keyboardLanguage)
-        }
-
-        VirtualKeyboardModalBottomSheet(
-            mustClearInputField = mustClearInputField,
-            sendKeyboardKeyReport = sendKeyboardKeyReport,
-            sendTextReport = { text: String, shouldSendEnter: Boolean ->
-                sendTextReport(text, virtualKeyboardLayout, shouldSendEnter)
-            },
-            onShowKeyboardBottomSheetChanged = onShowKeyboardChanged
-        )
-    }
-}
 
 @Composable
 private fun TopBarActions(
@@ -548,35 +521,26 @@ private fun TopBarActions(
         }
     }
 
-    if(useAdvancedKeyboardIntegrated) {
-        FadeAnimatedContent(targetState = isKeyboardVisible) {
-            when (it) {
-                true -> {
-                    // Remote
-                    BasicIconButton(
-                        onClick = { onKeyboardVisibleChanged(false) },
-                        icon = AppIcons.RemoteControl,
-                        contentDescription = stringResource(id = R.string.remote)
-                    )
-                }
+    FadeAnimatedContent(targetState = isKeyboardVisible) {
+        when (it) {
+            true -> {
+                // Remote
+                BasicIconButton(
+                    onClick = { onKeyboardVisibleChanged(false) },
+                    icon = AppIcons.RemoteControl,
+                    contentDescription = stringResource(id = R.string.remote)
+                )
+            }
 
-                false -> {
-                    // Keyboard
-                    BasicIconButton(
-                        onClick = { onKeyboardVisibleChanged(true) },
-                        icon = AppIcons.Keyboard,
-                        contentDescription = stringResource(id = R.string.keyboard)
-                    )
-                }
+            false -> {
+                // Keyboard
+                BasicIconButton(
+                    onClick = { onKeyboardVisibleChanged(true) },
+                    icon = AppIcons.Keyboard,
+                    contentDescription = stringResource(id = R.string.keyboard)
+                )
             }
         }
-    } else {
-        // Keyboard
-        BasicIconButton(
-            onClick = { onKeyboardVisibleChanged(!isKeyboardVisible) },
-            icon = AppIcons.Keyboard,
-            contentDescription = stringResource(id = R.string.keyboard)
-        )
     }
 
     MoreOverflowMenu { closeDropdownMenu: () -> Unit ->
