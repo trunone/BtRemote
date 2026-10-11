@@ -7,7 +7,6 @@ import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.SegmentedButton
@@ -33,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -737,11 +736,11 @@ private fun SettingsTitle(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
+        Icon(
             imageVector = icon,
             contentDescription = iconDescription,
             modifier = Modifier.size(dimensionResource(id = R.dimen.medium_icon_size)),
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.secondary)
+            tint = MaterialTheme.colorScheme.secondary
         )
         TextNormal(
             text = text,
