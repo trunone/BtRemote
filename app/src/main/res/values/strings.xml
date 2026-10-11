@@ -165,6 +165,9 @@
     <string name="keyboard_ukrainian">Ukrainian</string>
     <string name="keyboard_persian">Persian</string>
     <string name="keyboard_arabic">Arabic</string>
+    <string name="function_keys">Function keys</string>
+    <string name="special_keys">Special keys</string>
+    <string name="combination_keys">Combination keys</string>
     <string name="send">Send</string>
     <string name="enter">Enter</string>
     <string name="escape">Esc</string>
