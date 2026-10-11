@@ -1,6 +1,5 @@
 package com.atharok.btremote.data.repositories
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.atharok.btremote.data.bluetooth.BluetoothHidCore
 import com.atharok.btremote.data.bluetooth.BluetoothLocalData
 import com.atharok.btremote.data.bluetooth.BluetoothScanner
@@ -27,7 +26,7 @@ class BluetoothRepositoryImpl(
 
     // ---- BluetoothScanner ----
 
-    override fun getScannedDevices(): SnapshotStateList<DeviceEntity> = bluetoothScanner.scannedDevices
+    override fun getScannedDevicesFlow(): StateFlow<List<DeviceEntity>> = bluetoothScanner.scannedDevicesFlow
 
     override fun registerBluetoothScannerReceiver() {
         bluetoothScanner.registerBluetoothScannerReceiver()

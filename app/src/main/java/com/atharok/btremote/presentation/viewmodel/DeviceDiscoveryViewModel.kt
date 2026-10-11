@@ -1,6 +1,5 @@
 package com.atharok.btremote.presentation.viewmodel
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atharok.btremote.domain.entities.DeviceEntity
@@ -23,7 +22,7 @@ class DeviceDiscoveryViewModel(
 
     // ---- Discover Devices ----
 
-    val scannedDevices: SnapshotStateList<DeviceEntity> get() = useCase.getScannedDevices()
+    val scannedDevicesFlow: StateFlow<List<DeviceEntity>> get() = useCase.getScannedDevicesFlow()
 
     fun registerBluetoothScannerReceiver() {
         useCase.registerBluetoothScannerReceiver()

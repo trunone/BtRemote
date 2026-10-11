@@ -7,7 +7,7 @@ Recursos:
 - Suporte a mouse e teclado integrado.
 - Não é necessário instalar apps na sua Android TV graças ao protocolo HID.
 - Interface de usuário moderna e responsiva.
-- Desenvolvido com Kotlin, Jetpack Compose, e Material 3.
+- Desenvolvido com Kotlin, Android Views, e Material 3.
 - Focado na privacidade, sem nenhuma coleta de dados (a permissão de internet é desativada).
 - Sem anúncios.
 - Código aberto.

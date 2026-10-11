@@ -7,7 +7,7 @@ Funkcje:
 - Obsługa zintegrowanej myszy i klawiatury.
 - Brak konieczności instalacji dodatkowej aplikacji na urządzeniu Android TV dzięki protokołowi HID.
 - Nowoczesny i responsywny interfejs użytkownika.
-- Opracowany przy użyciu Kotlin, Jetpack Compose i Material 3.
+- Opracowany przy użyciu Kotlin, Android Views i Material 3.
 - Dbałość o prywatność i brak gromadzenia danych (wyłączone uprawnienia internetowe).
 - Brak reklam.
 - Otwarty kod źródłowy.

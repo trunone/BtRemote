@@ -7,7 +7,7 @@ Mga tampok:
 - Support para sa integrated mouse at keyboard.
 - Walang kinakailangan na karagdagang pag-install ng app sa iyong Android TV na device salamat sa HID protocol.
 - Modern at responsive na user interface.
-- Na-develop gamit ang Kotlin, Jetpack Compose, at Material 3.
+- Na-develop gamit ang Kotlin, Android Views, at Material 3.
 - Naka-focus sa privacy na may walang pangongolekta ng data (naka-disable ang pahintulot ng internet).
 - Walang mga advertisement.
 - Open source.

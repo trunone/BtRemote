@@ -7,7 +7,7 @@ Funkce:
 - Podpora pro integrovanou myš i klávesnici.
 - Na vaší Android TV není třeba instalovat žádnou další aplikace díky HID protokolu.
 - Moderní a intuitivní rozhraní.
-- Vyvinuto za použití Kotlinu, Jetpack Compose a Material 3.
+- Vyvinuto za použití Kotlinu, Android Views a Material 3.
 - Zaměřeno na soukromí bez jakéhokoliv sběru dat (není povolen přístup k internetu).
 - Bez reklam.
 - Open source.

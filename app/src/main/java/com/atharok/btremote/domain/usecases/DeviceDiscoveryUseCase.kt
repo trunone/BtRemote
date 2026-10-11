@@ -1,8 +1,8 @@
 package com.atharok.btremote.domain.usecases
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.atharok.btremote.domain.entities.DeviceEntity
 import com.atharok.btremote.domain.repositories.BluetoothRepository
+import kotlinx.coroutines.flow.StateFlow
 
 class DeviceDiscoveryUseCase(
     private val bluetoothRepository: BluetoothRepository,
@@ -20,7 +20,7 @@ class DeviceDiscoveryUseCase(
 
     // ---- Discover Devices ----
 
-    fun getScannedDevices(): SnapshotStateList<DeviceEntity> = bluetoothRepository.getScannedDevices()
+    fun getScannedDevicesFlow(): StateFlow<List<DeviceEntity>> = bluetoothRepository.getScannedDevicesFlow()
 
     fun registerBluetoothScannerReceiver() {
         bluetoothRepository.registerBluetoothScannerReceiver()

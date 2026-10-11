@@ -7,7 +7,7 @@ Funktionen:
 - Unterstützung für integrierte Maus und Tastatur.
 - Dank HID-Protokoll keine weiteren App-Installation auf deinem Android TV notwendig.
 - Moderne und flexible Benutzeroberfläche.
-- Mit Kotlin, Jetpack, Compose und Material 3 entwickelt.
+- Mit Kotlin, Android Views und Material 3 entwickelt.
 - Datenschutz ist wichtig, keine Datensammlung (Internetberechtigung deaktiviert).
 - Keine Werbung.
 - Open Source.

@@ -1,6 +1,5 @@
 package com.atharok.btremote.domain.repositories
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.atharok.btremote.domain.entities.DeviceEntity
 import com.atharok.btremote.domain.entities.DeviceHidConnectionState
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.virtualKeyboard.VirtualKeyboardLayout
@@ -16,7 +15,7 @@ interface BluetoothRepository {
 
     // ---- BluetoothScanner ----
 
-    fun getScannedDevices(): SnapshotStateList<DeviceEntity>
+    fun getScannedDevicesFlow(): StateFlow<List<DeviceEntity>>
     fun registerBluetoothScannerReceiver()
     fun unregisterBluetoothScannerReceiver()
     fun startDiscovery(): Boolean

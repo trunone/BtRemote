@@ -13,13 +13,12 @@ import android.os.Binder
 import android.os.IBinder
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
-import androidx.glance.appwidget.updateAll
 import com.atharok.btremote.R
 import com.atharok.btremote.common.utils.NOTIFICATION_CHANNEL_ID
 import com.atharok.btremote.common.utils.NOTIFICATION_ID
 import com.atharok.btremote.domain.usecases.BluetoothHidServiceUseCase
 import com.atharok.btremote.presentation.activities.MainActivity
-import com.atharok.btremote.presentation.glance.MediaControlWidget
+import com.atharok.btremote.presentation.glance.MediaControlWidgetReceiver
 import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_BACK
 import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_DISCONNECT
 import com.atharok.btremote.presentation.services.NotificationBroadcastReceiver.Companion.ACTION_DOWN
@@ -61,14 +60,14 @@ class BluetoothHidService : Service() {
                             )
                             currentConnectionState = STATE_CONNECTED
                         }
-                        MediaControlWidget().updateAll(this@BluetoothHidService)
+                        MediaControlWidgetReceiver.updateWidget(this@BluetoothHidService)
                     }
                     STATE_DISCONNECTED -> {
                         if(currentConnectionState != STATE_DISCONNECTED) {
                             updateNotificationForDisconnectedState()
                             currentConnectionState = STATE_DISCONNECTED
                         }
-                        MediaControlWidget().updateAll(this@BluetoothHidService)
+                        MediaControlWidgetReceiver.updateWidget(this@BluetoothHidService)
                     }
                 }
             }
@@ -116,7 +115,6 @@ class BluetoothHidService : Service() {
             setSmallIcon(R.drawable.notification_icon)
             setContentTitle(getString(R.string.connected_off))
             setOngoing(true)
-            //.setContentIntent(createOpenApplicationPendingIntent())
             setStyle(NotificationCompat.DecoratedCustomViewStyle())
             addAction(
                 NotificationCompat.Action.Builder(
@@ -143,7 +141,6 @@ class BluetoothHidService : Service() {
                 setContentTitle(getString(R.string.connected_on, deviceName))
             }
             setOngoing(true)
-            //setContentIntent(createOpenApplicationPendingIntent())
             setStyle(NotificationCompat.DecoratedCustomViewStyle())
             addAction(
                 NotificationCompat.Action.Builder(

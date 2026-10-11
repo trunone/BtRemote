@@ -1,7 +1,6 @@
 package com.atharok.btremote.domain.entities.remoteInput.keyboard.advancedKeyboard
 
 import android.content.Context
-import androidx.compose.ui.text.style.TextAlign
 import com.atharok.btremote.R
 import com.atharok.btremote.domain.entities.remoteInput.RemoteButtonProperties
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.KeyboardKey
@@ -117,14 +116,12 @@ abstract class AdvancedKeyboardLayout(protected val context: Context) {
                 TextAdvancedKeyboardKey(
                     byte = KeyboardKey.KEY_SHIFT_LEFT.byte,
                     weight = 1f,
-                    text = context.getString(R.string.shift),
-                    textAlign = TextAlign.Start
+                    text = context.getString(R.string.shift)
                 ),
                 TextAdvancedKeyboardKey(
                     byte = KeyboardKey.KEY_META_LEFT.byte,
                     weight = 1f,
-                    text = context.getString(R.string.meta),
-                    textAlign = TextAlign.Start
+                    text = context.getString(R.string.meta)
                 ),
                 IconAdvancedKeyboardKey(
                     properties = RemoteButtonProperties.KeyboardLeftButton,
@@ -141,14 +138,12 @@ abstract class AdvancedKeyboardLayout(protected val context: Context) {
                 TextAdvancedKeyboardKey(
                     byte = KeyboardKey.KEY_META_RIGHT.byte,
                     weight = 1f,
-                    text = context.getString(R.string.meta),
-                    textAlign = TextAlign.End
+                    text = context.getString(R.string.meta)
                 ),
                 TextAdvancedKeyboardKey(
                     byte = KeyboardKey.KEY_SHIFT_RIGHT.byte,
                     weight = 1f,
-                    text = context.getString(R.string.shift),
-                    textAlign = TextAlign.End
+                    text = context.getString(R.string.shift)
                 )
             ),
 
@@ -157,14 +152,12 @@ abstract class AdvancedKeyboardLayout(protected val context: Context) {
                 TextAdvancedKeyboardKey(
                     byte = KeyboardKey.KEY_CTRL_LEFT.byte,
                     weight = 1f,
-                    text = context.getString(R.string.ctrl),
-                    textAlign = TextAlign.Start
+                    text = context.getString(R.string.ctrl)
                 ),
                 TextAdvancedKeyboardKey(
                     byte = KeyboardKey.KEY_ALT.byte,
                     weight = 1f,
-                    text = context.getString(R.string.alt),
-                    textAlign = TextAlign.Center
+                    text = context.getString(R.string.alt)
                 ),
                 IconAdvancedKeyboardKey(
                     properties = RemoteButtonProperties.KeyboardSpaceBarButton,
@@ -173,14 +166,12 @@ abstract class AdvancedKeyboardLayout(protected val context: Context) {
                 TextAdvancedKeyboardKey(
                     byte = KeyboardKey.KEY_ALT_GR.byte,
                     weight = 1f,
-                    text = context.getString(R.string.alt_gr),
-                    textAlign = TextAlign.Center
+                    text = context.getString(R.string.alt_gr)
                 ),
                 TextAdvancedKeyboardKey(
                     byte = KeyboardKey.KEY_CTRL_RIGHT.byte,
                     weight = 1f,
-                    text = context.getString(R.string.ctrl),
-                    textAlign = TextAlign.End
+                    text = context.getString(R.string.ctrl)
                 )
             )
         )

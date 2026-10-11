@@ -71,7 +71,7 @@ import com.atharok.btremote.presentation.viewmodel.RemoteViewModel
 import com.atharok.btremote.presentation.viewmodel.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import java.util.Locale
 
@@ -144,47 +144,13 @@ private val androidModule: Module = module {
 }
 
 private val viewModelModule: Module = module {
-    viewModel {
-        AppScopeViewModel(
-            useCase = get<AppScopeUseCase>()
-        )
-    }
-
-    viewModel {
-        GyroscopeSensorViewModel(
-            useCase = get<GyroscopeSensorUseCase>()
-        )
-    }
-
-    viewModel {
-        SettingsViewModel(
-            useCase = get<SettingsUseCase>()
-        )
-    }
-
-    viewModel {
-        BluetoothActivationViewModel(
-            useCase = get<BluetoothActivationUseCase>()
-        )
-    }
-
-    viewModel {
-        DeviceSelectionViewModel(
-            useCase = get<DeviceSelectionUseCase>()
-        )
-    }
-
-    viewModel {
-        DeviceDiscoveryViewModel(
-            useCase = get<DeviceDiscoveryUseCase>()
-        )
-    }
-
-    viewModel {
-        RemoteViewModel(
-            useCase = get<RemoteUseCase>()
-        )
-    }
+    viewModelOf(::AppScopeViewModel)
+    viewModelOf(::GyroscopeSensorViewModel)
+    viewModelOf(::SettingsViewModel)
+    viewModelOf(::BluetoothActivationViewModel)
+    viewModelOf(::DeviceSelectionViewModel)
+    viewModelOf(::DeviceDiscoveryViewModel)
+    viewModelOf(::RemoteViewModel)
 }
 
 private val useCaseModule: Module = module {

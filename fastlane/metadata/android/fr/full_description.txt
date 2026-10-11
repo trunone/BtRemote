@@ -7,7 +7,7 @@ Fonctionnalités :
 - Prise en charge de la souris et du clavier intégrés.
 - Aucune application à installer sur votre appareil Android TV grâce au protocole HID.
 - Interface utilisateur moderne et réactive.
-- Développé avec Kotlin, Jetpack Compose et Material 3.
+- Développé avec Kotlin, Android Views et Material 3.
 - Respect de la vie privée sans collecte de données (permission internet désactivée).
 - Aucune publicité.
 - Open source.

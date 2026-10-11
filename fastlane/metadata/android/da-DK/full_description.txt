@@ -6,7 +6,7 @@ Funktioner:
 -Support for integreret mus og tastatur.
 -Ingen yderligere app på dit Android TV, takket være HID protokollen.
 -Moderne og hurtig brugerflade.
--Udviklet sammen med Kotlin, Jetpack Compose, and Material 3.
+-Udviklet sammen med Kotlin, Android Views, and Material 3.
 -Privatliv i fokus, uden indsamling af data. (Internetadgang deaktiveret)
 -Ingen reklamer.
 - Open source.

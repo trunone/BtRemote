@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/bluetoothPermissionsFragment">
+
+    <fragment
+        android:id="@+id/bluetoothPermissionsFragment"
+        android:name="com.atharok.btremote.presentation.ui.BluetoothPermissionsFragment"
+        android:label="@string/permission" />
+
+    <fragment
+        android:id="@+id/bluetoothActivationFragment"
+        android:name="com.atharok.btremote.presentation.ui.BluetoothActivationFragment"
+        android:label="@string/activation" />
+
+    <fragment
+        android:id="@+id/bluetoothNotSupportFragment"
+        android:name="com.atharok.btremote.presentation.ui.BluetoothNotSupportFragment"
+        android:label="@string/error" />
+
+    <fragment
+        android:id="@+id/deviceSelectionFragment"
+        android:name="com.atharok.btremote.presentation.ui.DeviceSelectionFragment"
+        android:label="@string/devices" />
+
+    <fragment
+        android:id="@+id/deviceDiscoveryFragment"
+        android:name="com.atharok.btremote.presentation.ui.DeviceDiscoveryFragment"
+        android:label="@string/pairing_a_device" />
+
+    <fragment
+        android:id="@+id/distantDevicePairFragment"
+        android:name="com.atharok.btremote.presentation.ui.DistantDevicePairFragment"
+        android:label="@string/pairing_from_the_remote_device" />
+
+    <fragment
+        android:id="@+id/remoteFragment"
+        android:name="com.atharok.btremote.presentation.ui.RemoteFragment"
+        android:label="@string/remote" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.atharok.btremote.presentation.ui.SettingsFragment"
+        android:label="@string/settings" />
+
+    <fragment
+        android:id="@+id/thirdLibrariesFragment"
+        android:name="com.atharok.btremote.presentation.ui.ThirdLibrariesFragment"
+        android:label="@string/third_party_library" />
+
+</navigation>
