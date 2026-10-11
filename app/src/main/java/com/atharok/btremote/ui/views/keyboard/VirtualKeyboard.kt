@@ -8,23 +8,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SecondaryTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -41,7 +36,6 @@ import com.atharok.btremote.common.utils.REMOTE_INPUT_NONE
 import com.atharok.btremote.domain.entities.remoteInput.RemoteButtonProperties
 import com.atharok.btremote.domain.entities.remoteInput.keyboard.KeyboardKey
 import com.atharok.btremote.ui.components.BasicIconButton
-import com.atharok.btremote.ui.components.TextNormal
 import com.atharok.btremote.ui.components.customButtons.RemoteIconSurfaceButton
 import com.atharok.btremote.ui.components.customButtons.TextKeyboardKey
 import com.atharok.btremote.ui.theme.surfaceElevationHigh
@@ -149,54 +143,30 @@ private fun StatelessKeyboardView(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AdditionalKeyboardKeysLayout(
     sendKeyboardKeyReport: (ByteArray) -> Unit,
     modifier: Modifier = Modifier,
     spaceBetweenButtons: Dp = dimensionResource(id = R.dimen.padding_small)
 ) {
-    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
-
     Column(
-        modifier = modifier,
+        modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(spaceBetweenButtons)
     ) {
-        SecondaryTabRow(
-            selectedTabIndex = selectedTabIndex,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Tab(
-                selected = selectedTabIndex == 0,
-                onClick = { selectedTabIndex = 0 },
-                text = { TextNormal(text = stringResource(id = R.string.special_keys)) }
-            )
-            Tab(
-                selected = selectedTabIndex == 1,
-                onClick = { selectedTabIndex = 1 },
-                text = { TextNormal(text = stringResource(id = R.string.function_keys)) }
-            )
-            Tab(
-                selected = selectedTabIndex == 2,
-                onClick = { selectedTabIndex = 2 },
-                text = { TextNormal(text = stringResource(id = R.string.combination_keys)) }
-            )
-        }
+        SpecialKeysLayout(
+            sendKeyboardKeyReport = sendKeyboardKeyReport,
+            spaceBetweenButtons = spaceBetweenButtons
+        )
 
-        when (selectedTabIndex) {
-            0 -> SpecialKeysLayout(
-                sendKeyboardKeyReport = sendKeyboardKeyReport,
-                spaceBetweenButtons = spaceBetweenButtons
-            )
-            1 -> FunctionKeysLayout(
-                sendKeyboardKeyReport = sendKeyboardKeyReport,
-                spaceBetweenButtons = spaceBetweenButtons
-            )
-            2 -> CombinationKeysLayout(
-                sendKeyboardKeyReport = sendKeyboardKeyReport,
-                spaceBetweenButtons = spaceBetweenButtons
-            )
-        }
+        FunctionKeysLayout(
+            sendKeyboardKeyReport = sendKeyboardKeyReport,
+            spaceBetweenButtons = spaceBetweenButtons
+        )
+
+        CombinationKeysLayout(
+            sendKeyboardKeyReport = sendKeyboardKeyReport,
+            spaceBetweenButtons = spaceBetweenButtons
+        )
     }
 }
 
