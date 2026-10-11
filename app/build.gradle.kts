@@ -17,17 +17,25 @@ android {
         versionName = "1.13.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+    }
+
+    androidResources {
+        localeFilters += listOf(
+            "en", "ar", "bg", "br", "ca", "cs", "da", "de", "el", "es", "fa", "fil", "fr", "iw", "nl", "pl", "pt-rBR", "ru", "tr", "uk", "zh-rCN"
+        )
     }
 
     signingConfigs {
         create("release") {
-            System.getenv("ANDROID_KEY_STORE_FILE")?.let { storeFile = file(it) }
-            System.getenv("ANDROID_KEY_STORE_PASSWORD")?.let { storePassword = it }
-            System.getenv("ANDROID_KEY_ALIAS")?.let { keyAlias = it }
-            System.getenv("ANDROID_KEY_PASSWORD")?.let { keyPassword = it }
+            val storeFilePath = System.getenv("ANDROID_KEY_STORE_FILE")
+            if (storeFilePath != null) {
+                storeFile = file(storeFilePath)
+                storePassword = System.getenv("ANDROID_KEY_STORE_PASSWORD")
+                keyAlias = System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+            } else {
+                initWith(getByName("debug"))
+            }
         }
     }
 
@@ -72,6 +80,12 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/*.version"
+            excludes += "META-INF/licenses/**"
+            excludes += "META-INF/LICENSE*"
+            excludes += "META-INF/NOTICE*"
+            excludes += "DebugProbesKt.bin"
+            excludes += "**/*.proto"
         }
     }
 

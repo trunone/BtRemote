@@ -19,3 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Optimization rules for size reduction
+-repackageclasses ''
+-allowaccessmodification
+-dontusemixedcaseclassnames
+
+-keepattributes !LocalVariableTable,!LocalVariableTypeTable,!MethodParameters
+
+-assumenosideeffects class android.util.Log {
+    public static *** v(...);
+    public static *** d(...);
+}
